@@ -1,0 +1,54 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}{{ user.first_name }} — {{ session.name }}{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>{{ user.first_name }}</h1>
+  <a class="lien-matchs" href="{{ url_for('session_admin.utilisateurs', slug=session.slug) }}">← Membres</a>
+</div>
+<p class="petit">{{ email }} · créé par {{ 'intervenant' if user.created_by == 'admin' else 'le membre' }}</p>
+
+{% if error %}<p class="alert-rouge">{{ error }}</p>{% endif %}
+{% if msg %}<p class="alert-vert">{{ msg }}</p>{% endif %}
+
+{% if user.photos %}
+<div class="photos-grille">
+  {% for p in user.photos %}
+  <div class="photo-item {{ 'principale' if p.is_primary }}"><img src="{{ p.url }}" alt=""></div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<form method="post">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <label class="etiquette">Prénom
+    <input type="text" name="first_name" class="champ" value="{{ user.first_name }}" maxlength="60" required>
+  </label>
+  <label class="etiquette">Sexe
+    <select name="sex" class="champ">
+      <option value="F" {{ 'selected' if user.sex == 'F' }}>Femme</option>
+      <option value="M" {{ 'selected' if user.sex == 'M' }}>Homme</option>
+      <option value="X" {{ 'selected' if user.sex == 'X' }}>Autre</option>
+    </select>
+  </label>
+  <label class="etiquette">Bio
+    <textarea name="bio" class="champ" rows="3" maxlength="500">{{ user.bio }}</textarea>
+  </label>
+  <label class="etiquette">Passions (max 10, virgules)
+    <input type="text" name="interests" class="champ" value="{{ user.interests|join(', ') }}">
+  </label>
+  <label class="case">
+    <input type="checkbox" name="paused" {{ 'checked' if user.paused }}>
+    Compte en pause (invisible pour les autres)
+  </label>
+  <button type="submit" class="btn btn-vert btn-plein">Enregistrer</button>
+</form>
+
+<details class="danger-zone">
+  <summary class="btn btn-rouge btn-plein">Supprimer ce compte</summary>
+  <form method="post" action="{{ url_for('session_admin.utilisateur_delete', slug=session.slug, uid=uid) }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <p>Suppression définitive : profil, photos et matchs seront retirés.</p>
+    <button class="btn btn-rouge btn-plein">Supprimer</button>
+  </form>
+</details>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "superadmin/base_sa.html" %}
+{% block title %}Journal global — EftiSocial{% endblock %}
+{% block content %}
+<h1>Journal d'audit global</h1>
+<p class="petit">Historique immuable de toutes les manipulations.</p>
+<ul class="liste-journal">
+  {% for l in logs %}
+  <li>
+    <span class="petit">{{ l.ts.strftime('%d/%m %H:%M') }}</span>
+    <strong>{{ l.action }}</strong>
+    <span class="petit">
+      {{ l.actor_label or l.actor_role }}
+      {% if l.session_id and sess_map.get(l.session_id|string) %}
+        · {{ sess_map[l.session_id|string] }}
+      {% endif %}
+      {% if l.target_id %}→ {{ l.target_id }}{% endif %}
+    </span>
+  </li>
+  {% else %}
+  <li class="vide">Journal vide.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

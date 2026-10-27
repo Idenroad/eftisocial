@@ -1,0 +1,18 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Journal — {{ session.name }}{% endblock %}
+{% block content %}
+<h1>Journal d'audit</h1>
+<p class="petit">Historique immuable des manipulations de cette résidence.</p>
+<ul class="liste-journal">
+  {% for l in logs %}
+  <li>
+    <span class="petit">{{ l.ts.strftime('%d/%m %H:%M') }}</span>
+    <strong>{{ l.action }}</strong>
+    <span class="petit">{{ l.actor_label or l.actor_role }}
+      {% if l.target_id %}→ {{ l.target_id }}{% endif %}</span>
+  </li>
+  {% else %}
+  <li class="vide">Journal vide.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

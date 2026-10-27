@@ -1,0 +1,25 @@
+{% extends "user/base_app.html" %}
+{% block title %}{{ interest }} — {{ session.name }}{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>{{ interest }}</h1>
+  <a class="lien-matchs" href="{{ url_for('user_app.decouverte', slug=session.slug) }}">← {{ t("Retour") }}</a>
+</div>
+<ul class="liste-membres">
+  {% for m in members %}
+  <li>
+    <a href="{{ url_for('user_app.membre', slug=session.slug, uid=m.id) }}">
+      {% if m.photo_url %}
+      <img src="{{ m.photo_url }}" alt="" class="avatar">
+      {% else %}
+      <span class="avatar avatar-vide">{{ m.first_name[0] }}</span>
+      {% endif %}
+      <span>{{ m.first_name }}</span>
+      {% if m.shared %}<span class="badge">{{ m.shared }} {{ t("en commun") }}</span>{% endif %}
+    </a>
+  </li>
+  {% else %}
+  <li class="vide">{{ t("Personne d'autre pour cette passion.") }}</li>
+  {% endfor %}
+</ul>
+{% endblock %}

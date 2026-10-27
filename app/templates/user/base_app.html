@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block nav %}
+<nav class="bottomnav">
+  <a href="{{ url_for('user_app.trouver', slug=session.slug) }}"
+     class="{{ 'on' if active_tab == 'trouver' }}">
+    <span class="ico">♥</span>{{ t("Trouver") }}</a>
+  <a href="{{ url_for('user_app.decouverte', slug=session.slug) }}"
+     class="{{ 'on' if active_tab == 'decouverte' }}">
+    <span class="ico">★</span>{{ t("Découverte") }}</a>
+  <a href="{{ url_for('user_app.evenements', slug=session.slug) }}"
+     class="{{ 'on' if active_tab == 'evenements' }}">
+    <span class="ico">◷</span>{{ t("Événements") }}</a>
+  <a href="{{ url_for('user_app.mon_profil', slug=session.slug) }}"
+     class="{{ 'on' if active_tab == 'profil' }}">
+    <span class="ico">☺</span>{{ t("Profil") }}</a>
+</nav>
+{% endblock %}

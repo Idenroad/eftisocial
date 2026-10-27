@@ -1,0 +1,49 @@
+{% extends "user/base_app.html" %}
+{% block title %}{{ match.first_name }} — {{ session.name }}{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>
+    {% if match.photo_url %}<img src="{{ match.photo_url }}" alt="" class="avatar">{% endif %}
+    {{ match.first_name }}
+  </h1>
+  <a class="lien-matchs" href="{{ url_for('user_app.matchs', slug=session.slug) }}">← {{ t("Mes matchs") }}</a>
+</div>
+<div id="tchat" class="tchat" aria-live="polite"></div>
+<form id="form-msg" class="form-msg">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <input type="text" id="msg-input" class="champ" placeholder="{{ t('Écrire un message…') }}"
+         maxlength="2000" autocomplete="off" required>
+  <button type="submit" class="btn btn-vert">{{ t("Envoyer") }}</button>
+</form>
+<details class="options-match">
+  <summary class="petit">{{ t("Options du match") }}</summary>
+  <form method="post" action="{{ url_for('user_app.match_delete', slug=session.slug, mid=match.match_id) }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <button class="btn btn-lien btn-plein">{{ t("Supprimer le match") }} ({{ match.first_name }} {{ t("réapparaîtra dans votre pool") }})</button>
+  </form>
+  <form method="post" action="{{ url_for('user_app.membre_block', slug=session.slug, uid=match.id) }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <button class="btn btn-rouge btn-plein">{{ t("Bloquer") }} {{ match.first_name }}</button>
+  </form>
+  <details class="signalement">
+    <summary class="petit">{{ t("Signaler un comportement") }}</summary>
+    <form method="post" action="{{ url_for('user_app.membre_report', slug=session.slug, uid=match.id) }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <select name="reason" class="champ">
+        <option value="comportement">{{ t("Comportement déplacé") }}</option>
+        <option value="spam">{{ t("Spam / sollicitation") }}</option>
+        <option value="photo">{{ t("Photo inappropriée") }}</option>
+        <option value="autre">{{ t("Autre") }}</option>
+      </select>
+      <textarea name="details" class="champ" rows="2" maxlength="500" placeholder="{{ t('Détails (optionnel)') }}"></textarea>
+      <button class="btn btn-rouge btn-plein">{{ t("Envoyer le signalement") }}</button>
+    </form>
+  </details>
+</details>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/chat.js') }}"
+        data-msgs-url="{{ url_for('user_app.chat_messages', slug=session.slug, mid=match.match_id) }}"
+        data-send-url="{{ url_for('user_app.chat_send', slug=session.slug, mid=match.match_id) }}">
+</script>
+{% endblock %}

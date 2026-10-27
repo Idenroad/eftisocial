@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block nav %}
+<nav class="bottomnav">
+  <a href="{{ url_for('session_admin.dashboard', slug=session.slug) }}"><span class="ico">▤</span>Tableau</a>
+  <a href="{{ url_for('session_admin.utilisateurs', slug=session.slug) }}"><span class="ico">☺</span>Membres</a>
+  <a href="{{ url_for('session_admin.evenements', slug=session.slug) }}"><span class="ico">◷</span>Événements</a>
+  <a href="{{ url_for('session_admin.passions', slug=session.slug) }}"><span class="ico">★</span>Passions</a>
+  <a href="{{ url_for('session_admin.signalements', slug=session.slug) }}"><span class="ico">⚑</span>Alertes</a>
+  <a href="{{ url_for('session_admin.journal', slug=session.slug) }}"><span class="ico">≣</span>Journal</a>
+</nav>
+{% endblock %}

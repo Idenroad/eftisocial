@@ -1,0 +1,32 @@
+{% extends "user/base_app.html" %}
+{% block title %}{{ t("Trouver") }} — {{ session.name }}{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>{{ t("Trouver") }}</h1>
+  <a class="lien-matchs" href="{{ url_for('user_app.matchs', slug=session.slug) }}">{{ t("Mes matchs") }}</a>
+</div>
+<div id="deck" class="deck" aria-live="polite">
+  <p class="vide" id="deck-vide">{{ t("Chargement…") }}</p>
+</div>
+<div class="swipe-actions">
+  <button id="btn-pass" class="btn btn-rouge btn-rond" aria-label="Passer">✕</button>
+  <button id="btn-like" class="btn btn-vert btn-rond" aria-label="Aimer">♥</button>
+</div>
+<div id="match-overlay" class="match-overlay" hidden>
+  <div class="match-box">
+    <h2>{{ t("C'est un match !") }}</h2>
+    <p id="match-name"></p>
+    <button id="match-close" class="btn btn-vert">{{ t("Continuer") }}</button>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/swipe.js') }}"
+        data-deck-url="{{ url_for('user_app.api_deck', slug=session.slug) }}"
+        data-swipe-url="{{ url_for('user_app.api_swipe', slug=session.slug) }}"
+        data-t-loading="{{ t('Chargement…') }}"
+        data-t-empty="{{ t('Personne de nouveau pour le moment.') }} {{ t('Revenez plus tard ou explorez l\'onglet Découverte.') }}"
+        data-t-error="{{ t('Erreur de chargement.') }}"
+        data-t-shared="{{ t('passion(s) en commun') }}">
+</script>
+{% endblock %}

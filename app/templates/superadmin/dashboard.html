@@ -1,0 +1,24 @@
+{% extends "superadmin/base_sa.html" %}
+{% block title %}Superadmin — EftiSocial{% endblock %}
+{% block content %}
+<h1>Superadmin</h1>
+<p class="petit">{{ actor.email }}</p>
+<div class="stats">
+  <div class="stat"><span class="stat-n">{{ sessions|length }}</span>sessions</div>
+  <div class="stat"><span class="stat-n">{{ n_admins }}</span>intervenants</div>
+</div>
+<ul class="liste-membres">
+  {% for s in sessions %}
+  <li>
+    <a href="{{ url_for('superadmin.admins', slug=s.slug) }}">
+      <span>{{ s.name }}</span>
+      <span class="petit">/{{ s.slug }} {{ '(inactive)' if not s.active }}</span>
+    </a>
+  </li>
+  {% endfor %}
+</ul>
+<form method="post" action="{{ url_for('superadmin.logout') }}">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <button class="btn btn-lien btn-plein">Me déconnecter</button>
+</form>
+{% endblock %}

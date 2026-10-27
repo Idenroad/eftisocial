@@ -1,0 +1,30 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Signalements — {{ session.name }}{% endblock %}
+{% block content %}
+<h1>Signalements</h1>
+<p class="petit">Comportements signalés par les membres.</p>
+<ul class="liste-events">
+  {% for r in reports %}
+  <li class="event {{ 'annule' if r.handled }}">
+    <div class="event-date">{{ r.created_at.strftime('%d %b %Y · %H:%M') }}</div>
+    <h2>{{ r.reported_name }} — {{ r.reason }}</h2>
+    {% if r.details %}<p>{{ r.details }}</p>{% endif %}
+    <p class="petit">Signalé par {{ r.reporter_name }} · {{ r.reported_email }}
+      {% if r.handled %}· <em>traité</em>{% endif %}</p>
+    {% if not r.handled %}
+    <div class="event-actions">
+      <a class="btn btn-vert"
+         href="{{ url_for('session_admin.utilisateur_edit', slug=session.slug, uid=r.reported_id) }}">
+        Gérer le compte</a>
+      <form method="post" action="{{ url_for('session_admin.signalement_traite', slug=session.slug, rid=r.id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button class="btn btn-lien">Marquer traité</button>
+      </form>
+    </div>
+    {% endif %}
+  </li>
+  {% else %}
+  <li class="vide">Aucun signalement.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}{{ t("Connexion") }} — EftiSocial{% endblock %}
+{% block content %}
+<div class="center-box">
+  <h1>{{ t("Connexion") }}</h1>
+  {% if session %}<p class="residence-gros">{{ session.name }}</p>{% endif %}
+  <p>{{ t("Entrez votre courriel. Nous vous enverrons un code à 6 chiffres.") }}</p>
+  {% if error %}<p class="alert-rouge">{{ error }}</p>{% endif %}
+  <form method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="email" name="email" class="champ" placeholder="{{ t('votre@courriel.ca') }}"
+           autocomplete="email" inputmode="email" required autofocus>
+    <button type="submit" class="btn btn-vert btn-plein">{{ t("Recevoir mon code") }}</button>
+  </form>
+  {% if role == 'usager' %}
+  <p class="petit"><a href="{{ url_for('session_admin.login', slug=session.slug) }}">{{ t("Vous êtes intervenant ?") }}</a></p>
+  {% elif session %}
+  <p class="petit"><a href="{{ url_for('user_app.login', slug=session.slug) }}">{{ t("Vous êtes résident ?") }}</a></p>
+  {% endif %}
+</div>
+{% endblock %}

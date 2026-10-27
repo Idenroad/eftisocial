@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="csrf-token" content="{{ csrf_token() }}">
+<meta name="theme-color" content="#006847">
+{% if session %}<link rel="manifest" href="{{ url_for('user_app.manifest', slug=session.slug) }}">{% endif %}
+<title>{% block title %}EftiSocial{% endblock %}</title>
+<link rel="icon" href="{{ url_for('static', filename='icons/icon-192.png') }}">
+<link rel="apple-touch-icon" href="{{ url_for('static', filename='icons/icon-192.png') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+</head>
+<body>
+<div class="phone">
+  <header class="topbar">
+    <span class="brand"><span class="brand-coeur">♥</span> EftiSocial</span>
+    <div class="topbar-droite">
+      {% if session %}<span class="residence">{{ session.name }}</span>{% endif %}
+      <button id="btn-install" class="btn-install" hidden>
+        {{ t("Ajouter sur mon téléphone") }}
+      </button>
+      <select id="lang-select" class="lang-select" aria-label="Langue">
+        <option value="fr" {{ 'selected' if lang == 'fr' }}>Français</option>
+        <option value="en" {{ 'selected' if lang == 'en' }}>English</option>
+        <option value="es" {{ 'selected' if lang == 'es' }}>Español</option>
+      </select>
+    </div>
+  </header>
+  <main class="content">
+    {% block content %}{% endblock %}
+  </main>
+  {% block nav %}{% endblock %}
+</div>
+<div id="install-aide" class="install-aide" hidden>
+  <div class="install-aide-box">
+    <p id="install-aide-texte"></p>
+    <button id="install-aide-fermer" class="btn btn-vert btn-plein">{{ t("Compris") }}</button>
+  </div>
+</div>
+<script src="{{ url_for('static', filename='js/pwa.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

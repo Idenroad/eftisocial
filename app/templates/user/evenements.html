@@ -1,0 +1,60 @@
+{% extends "user/base_app.html" %}
+{% block title %}{{ t("Événements") }} — {{ session.name }}{% endblock %}
+{% block content %}
+<div class="page-head"><h1>{{ t("Événements") }}</h1></div>
+
+{% if error %}<p class="alert-rouge">{{ error }}</p>{% endif %}
+
+<ul class="liste-events">
+  {% for e in events if not e.cancelled %}
+  <li class="event">
+    <div class="event-date">{{ e.event_at.strftime('%d %b %Y · %H:%M') }}</div>
+    <h2>{{ e.title }}</h2>
+    {% if e.location %}<p class="petit">{{ t("Lieu : ") }}{{ e.location }}</p>{% endif %}
+    {% if e.description %}<p>{{ e.description }}</p>{% endif %}
+    <p class="petit">
+      {{ t("Par") }} {{ e.creator_name or 'Résidence' }} ·
+      {{ e.participants }} {{ t("participant(s)") }}{% if e.max_participants %}/{{ e.max_participants }}{% endif %}
+    </p>
+    <div class="event-actions">
+      {% if e.joined %}
+      <form method="post" action="{{ url_for('user_app.event_leave', slug=session.slug, eid=e.id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button class="btn btn-rouge">{{ t("Je me désinscris") }}</button>
+      </form>
+      {% else %}
+      <form method="post" action="{{ url_for('user_app.event_join', slug=session.slug, eid=e.id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button class="btn btn-vert"
+          {% if e.max_participants and e.participants >= e.max_participants %}disabled{% endif %}>
+          {{ t("Je participe") }}</button>
+      </form>
+      {% endif %}
+      {% if e.creator_role == 'user' and e.creator_id == actor.id %}
+      <form method="post" action="{{ url_for('user_app.event_cancel', slug=session.slug, eid=e.id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button class="btn btn-lien">{{ t("Annuler l'événement") }}</button>
+      </form>
+      {% endif %}
+    </div>
+  </li>
+  {% else %}
+  <li class="vide">{{ t("Aucun événement pour l'instant.") }}</li>
+  {% endfor %}
+</ul>
+
+<details class="nouveau-event">
+  <summary class="btn btn-vert btn-plein">{{ t("Organiser un événement") }}</summary>
+  <form method="post" class="form-event">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="text" name="title" class="champ" placeholder="{{ t('Titre (ex. : Bingo du jeudi)') }}" maxlength="120" required>
+    <input type="text" name="location" class="champ" placeholder="{{ t('Lieu (ex. : Salle commune)') }}" maxlength="200">
+    <textarea name="description" class="champ" placeholder="{{ t('Description') }}" maxlength="2000" rows="3"></textarea>
+    <label class="etiquette">{{ t("Date et heure") }}
+      <input type="datetime-local" name="event_at" class="champ" required>
+    </label>
+    <input type="number" name="max_participants" class="champ" placeholder="{{ t('Nb max de participants (optionnel)') }}" min="1">
+    <button type="submit" class="btn btn-vert btn-plein">{{ t("Publier l'événement") }}</button>
+  </form>
+</details>
+{% endblock %}

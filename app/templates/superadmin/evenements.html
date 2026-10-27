@@ -1,0 +1,43 @@
+{% extends "superadmin/base_sa.html" %}
+{% block title %}Événements — {{ session_row.name }}{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Événements</h1>
+  <a class="lien-matchs" href="{{ url_for('superadmin.sessions') }}">← Sessions</a>
+</div>
+<p class="petit">{{ session_row.name }} (/{{ session_row.slug }})</p>
+{% if error %}<p class="alert-rouge">{{ error }}</p>{% endif %}
+
+<details class="nouveau-event" {{ 'open' if error }}>
+  <summary class="btn btn-vert btn-plein">Créer un événement</summary>
+  <form method="post" class="form-event">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="text" name="title" class="champ" placeholder="Titre" maxlength="120" required>
+    <input type="text" name="location" class="champ" placeholder="Lieu" maxlength="200">
+    <textarea name="description" class="champ" placeholder="Description" rows="3" maxlength="2000"></textarea>
+    <label class="etiquette">Date et heure
+      <input type="datetime-local" name="event_at" class="champ" required>
+    </label>
+    <input type="number" name="max_participants" class="champ" placeholder="Nb max (optionnel)" min="1">
+    <button type="submit" class="btn btn-vert btn-plein">Publier</button>
+  </form>
+</details>
+
+<ul class="liste-events">
+  {% for e in events %}
+  <li class="event {{ 'annule' if e.cancelled }}">
+    <div class="event-date">{{ e.event_at.strftime('%d %b %Y · %H:%M') }}</div>
+    <h2>{{ e.title }} {% if e.cancelled %}<em class="petit">(annulé)</em>{% endif %}</h2>
+    <p class="petit">Par {{ e.creator_name or e.creator_role }} · {{ e.participants }} participant(s)</p>
+    {% if not e.cancelled %}
+    <form method="post" action="{{ url_for('superadmin.evenement_delete', slug=session_row.slug, eid=e.id) }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button class="btn btn-rouge">Supprimer</button>
+    </form>
+    {% endif %}
+  </li>
+  {% else %}
+  <li class="vide">Aucun événement.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

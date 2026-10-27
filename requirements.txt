@@ -1,0 +1,10 @@
+# EftiSocial — dépendances épinglées
+flask==3.1.3
+jinja2==3.1.6
+werkzeug==3.1.9
+gunicorn==26.2.0
+psycopg[binary]==3.3.6
+flask-wtf==1.3.0
+pillow==13.0.0
+python-dotenv==1.2.4
+pytest==9.0.3

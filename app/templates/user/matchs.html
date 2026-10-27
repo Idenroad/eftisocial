@@ -1,0 +1,24 @@
+{% extends "user/base_app.html" %}
+{% block title %}{{ t("Mes matchs") }} — {{ session.name }}{% endblock %}
+{% block content %}
+<div class="page-head"><h1>{{ t("Mes matchs") }}</h1></div>
+{% if not matchs %}
+<p class="vide">{{ t("Aucun match pour le moment. Continuez à swiper !") }}</p>
+{% endif %}
+<ul class="liste-membres">
+  {% for m in matchs %}
+  <li>
+    <a href="{{ url_for('user_app.chat', slug=session.slug, mid=m.match_id) }}">
+      {% if m.photo_url %}
+      <img src="{{ m.photo_url }}" alt="" class="avatar">
+      {% else %}
+      <span class="avatar avatar-vide">{{ m.first_name[0] }}</span>
+      {% endif %}
+      <span>{{ m.first_name }}</span>
+      <span class="petit">{{ m.created_at.strftime('%d/%m/%Y') }}</span>
+      {% if m.unread %}<span class="badge-rouge">{{ m.unread }}</span>{% endif %}
+    </a>
+  </li>
+  {% endfor %}
+</ul>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends "superadmin/base_sa.html" %}
+{% block title %}Sessions — EftiSocial{% endblock %}
+{% block content %}
+<h1>Sessions (résidences)</h1>
+{% if error %}<p class="alert-rouge">{{ error }}</p>{% endif %}
+{% if msg %}<p class="alert-vert">{{ msg }}</p>{% endif %}
+
+<details class="nouveau-event" {{ 'open' if error }}>
+  <summary class="btn btn-vert btn-plein">Créer une session</summary>
+  <form method="post" class="form-event">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="text" name="name" class="champ" placeholder="Ex. : Résidence Manoir Bleu" maxlength="120" required>
+    <button type="submit" class="btn btn-vert btn-plein">Créer</button>
+  </form>
+</details>
+
+<ul class="liste-events">
+  {% for s in sessions %}
+  <li class="event {{ 'annule' if not s.active }}">
+    <h2>{{ s.name }}</h2>
+    <p class="petit">/{{ s.slug }} · schéma {{ s.schema_name }}</p>
+    <div class="event-actions">
+      <a class="btn btn-vert" href="{{ url_for('superadmin.admins', slug=s.slug) }}">Intervenants</a>
+      <a class="btn btn-vert" href="{{ url_for('superadmin.evenements', slug=s.slug) }}">Événements</a>
+      <form method="post" action="{{ url_for('superadmin.session_toggle', slug=s.slug) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button class="btn btn-lien">{{ 'Désactiver' if s.active else 'Réactiver' }}</button>
+      </form>
+    </div>
+    <details class="danger-zone">
+      <summary class="btn btn-rouge">Supprimer</summary>
+      <form method="post" action="{{ url_for('superadmin.session_delete', slug=s.slug) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <p>Tapez <strong>{{ s.slug }}</strong> pour confirmer la suppression
+           de TOUTES les données de cette résidence.</p>
+        <input type="text" name="confirm" class="champ" placeholder="{{ s.slug }}">
+        <button class="btn btn-rouge btn-plein">Supprimer définitivement</button>
+      </form>
+    </details>
+  </li>
+  {% else %}
+  <li class="vide">Aucune session.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

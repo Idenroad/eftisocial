@@ -1,0 +1,109 @@
+{% extends "user/base_app.html" %}
+{% block title %}{{ t("Mon profil") }} — {{ session.name }}{% endblock %}
+{% block content %}
+<div class="page-head"><h1>{{ t("Mon profil") }}</h1></div>
+
+{% if actor.paused %}
+<p class="alert-rouge">{{ t("Votre compte est en pause : les autres membres ne vous voient pas.") }}</p>
+{% endif %}
+{% if error %}<p class="alert-rouge">{{ error }}</p>{% endif %}
+{% if msg %}<p class="alert-vert">{{ msg }}</p>{% endif %}
+
+<h2>{{ t("Mes photos") }}</h2>
+<div class="photos-grille">
+  {% for p in profil.photos %}
+  <div class="photo-item {{ 'principale' if p.is_primary }}">
+    <img src="{{ p.url }}" alt="">
+    <div class="photo-actions">
+      {% if not p.is_primary %}
+      <form method="post" action="{{ url_for('user_app.photo_primary', slug=session.slug, pid=p.id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button class="mini" title="★">★</button>
+      </form>
+      {% endif %}
+      <form method="post" action="{{ url_for('user_app.photo_delete', slug=session.slug, pid=p.id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button class="mini rouge" title="✕">✕</button>
+      </form>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+<form method="post" action="{{ url_for('user_app.photo_upload', slug=session.slug) }}"
+      enctype="multipart/form-data">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <label class="btn btn-vert btn-plein fichier-btn">
+    {{ t("Ajouter une photo") }}
+    <input type="file" name="photo" accept="image/*" hidden>
+  </label>
+</form>
+
+<h2>{{ t("Mes informations") }}</h2>
+<form method="post">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <label class="etiquette">{{ t("Prénom") }}
+    <input type="text" name="first_name" class="champ" value="{{ profil.first_name }}" maxlength="60" required>
+  </label>
+  <label class="etiquette">{{ t("Sexe") }}
+    <select name="sex" class="champ">
+      <option value="F" {{ 'selected' if profil.sex == 'F' }}>{{ t("Femme") }}</option>
+      <option value="M" {{ 'selected' if profil.sex == 'M' }}>{{ t("Homme") }}</option>
+      <option value="X" {{ 'selected' if profil.sex == 'X' }}>{{ t("Autre") }}</option>
+    </select>
+  </label>
+  <label class="etiquette">{{ t("À propos de moi") }}
+    <textarea name="bio" class="champ" rows="3" maxlength="500">{{ profil.bio }}</textarea>
+  </label>
+  <label class="etiquette">{{ t("Mes passions (max 10, séparées par des virgules)") }}
+    <input type="text" name="interests" class="champ" list="catalogue-passions"
+           value="{{ profil.interests|join(', ') }}"
+           placeholder="{{ t('jardinage, bingo, marche') }}">
+  </label>
+  {% if catalog %}
+  <datalist id="catalogue-passions">
+    {% for c in catalog %}<option value="{{ c }}">{% endfor %}
+  </datalist>
+  {% endif %}
+  <button type="submit" class="btn btn-vert btn-plein">{{ t("Enregistrer") }}</button>
+</form>
+
+{% if blocked %}
+<h2>{{ t("Membres bloqués") }}</h2>
+<ul class="liste-membres">
+  {% for b in blocked %}
+  <li>
+    <span>{{ b.first_name }}</span>
+    <form method="post" action="{{ url_for('user_app.membre_unblock', slug=session.slug, uid=b.id) }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button class="btn btn-vert">{{ t("Débloquer") }}</button>
+    </form>
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}
+
+<h2>{{ t("Compte") }}</h2>
+<p class="petit">{{ actor.email }}</p>
+<form method="post" action="{{ url_for('user_app.profil_pause', slug=session.slug) }}">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <button class="btn btn-plein {{ 'btn-vert' if actor.paused else 'btn-rouge' }}">
+    {{ t("Réactiver mon compte") if actor.paused else t("Mettre mon compte en pause") }}
+  </button>
+</form>
+<form method="post" action="{{ url_for('user_app.logout', slug=session.slug) }}">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <button class="btn btn-plein btn-lien">{{ t("Me déconnecter") }}</button>
+</form>
+<details class="danger-zone">
+  <summary class="btn btn-rouge btn-plein">{{ t("Supprimer mon compte") }}</summary>
+  <form method="post" action="{{ url_for('user_app.profil_delete', slug=session.slug) }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <p>{{ t("Cette action est définitive : votre profil, vos photos et vos matchs seront supprimés.") }}</p>
+    <label class="case">
+      <input type="checkbox" name="confirm" value="oui" required>
+      {{ t("Je comprends, supprimer mon compte") }}
+    </label>
+    <button class="btn btn-rouge btn-plein">{{ t("Supprimer définitivement") }}</button>
+  </form>
+</details>
+{% endblock %}

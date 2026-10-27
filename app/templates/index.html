@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="center-box">
+  <h1>{{ t("Bienvenue") }}</h1>
+  <p>{{ t("Entrez le nom de votre résidence pour continuer.") }}</p>
+  {% if error %}<p class="alert-rouge">{{ error }}</p>{% endif %}
+  <form method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="text" name="residence" class="champ" placeholder="{{ t('Ex. : Manoir Bleu') }}"
+           value="{{ residence or '' }}" autocomplete="off" required>
+    <button type="submit" class="btn btn-vert btn-plein">{{ t("Continuer") }}</button>
+  </form>
+  <p class="petit"><a href="{{ url_for('superadmin.login') }}">{{ t("Accès superadmin") }}</a></p>
+</div>
+{% endblock %}

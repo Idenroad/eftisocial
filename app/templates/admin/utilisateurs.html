@@ -1,0 +1,36 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Membres — {{ session.name }}{% endblock %}
+{% block content %}
+<h1>Membres</h1>
+{% if error %}<p class="alert-rouge">{{ error }}</p>{% endif %}
+{% if msg %}<p class="alert-vert">{{ msg }}</p>{% endif %}
+
+<details class="nouveau-event" {{ 'open' if error }}>
+  <summary class="btn btn-vert btn-plein">Créer un compte membre</summary>
+  <form method="post" class="form-event">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="text" name="first_name" class="champ" placeholder="Prénom" maxlength="60" required>
+    <input type="email" name="email" class="champ" placeholder="courriel@exemple.ca" required>
+    <select name="sex" class="champ">
+      <option value="F">Femme</option>
+      <option value="M">Homme</option>
+      <option value="X">Autre</option>
+    </select>
+    <button type="submit" class="btn btn-vert btn-plein">Créer le compte</button>
+  </form>
+</details>
+
+<ul class="liste-membres">
+  {% for u in users %}
+  <li>
+    <a href="{{ url_for('session_admin.utilisateur_edit', slug=session.slug, uid=u.id) }}">
+      <span>{{ u.first_name }} {% if u.paused %}<em class="petit">(pause)</em>{% endif %}</span>
+      <span class="petit">{{ u.email }}</span>
+      <span class="badge">{{ u.n_interests }} passions</span>
+    </a>
+  </li>
+  {% else %}
+  <li class="vide">Aucun membre.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

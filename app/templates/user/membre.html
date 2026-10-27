@@ -1,0 +1,57 @@
+{% extends "user/base_app.html" %}
+{% block title %}{{ profil.first_name }} — {{ session.name }}{% endblock %}
+{% block content %}
+<div class="carte-profil">
+  <div class="galerie">
+    {% for p in profil.photos %}
+    <img src="{{ p.url }}" alt="">
+    {% else %}
+    <div class="photo-vide">{{ profil.first_name[0] }}</div>
+    {% endfor %}
+  </div>
+  <h1>{{ profil.first_name }}</h1>
+  {% if profil.bio %}<p>{{ profil.bio }}</p>{% endif %}
+  <div class="tags">
+    {% for i in profil.interests %}
+    <span class="tag {{ 'tag-commun' if i in profil.shared }}">{{ i }}</span>
+    {% endfor %}
+  </div>
+  {% if profil.shared %}
+  <p class="petit">{{ profil.shared|length }} {{ t("passion(s) en commun") }}</p>
+  {% endif %}
+  <button id="btn-aimer" class="btn btn-vert btn-plein" data-uid="{{ profil.id }}">{{ t("Aimer ♥") }}</button>
+  <details class="options-match">
+    <summary class="petit">{{ t("Options") }}</summary>
+    <form method="post" action="{{ url_for('user_app.membre_block', slug=session.slug, uid=profil.id) }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button class="btn btn-rouge btn-plein">{{ t("Bloquer") }} {{ profil.first_name }}</button>
+    </form>
+    <details class="signalement">
+      <summary class="petit">{{ t("Signaler un comportement") }}</summary>
+      <form method="post" action="{{ url_for('user_app.membre_report', slug=session.slug, uid=profil.id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <select name="reason" class="champ">
+          <option value="comportement">{{ t("Comportement déplacé") }}</option>
+          <option value="spam">{{ t("Spam / sollicitation") }}</option>
+          <option value="photo">{{ t("Photo inappropriée") }}</option>
+          <option value="autre">{{ t("Autre") }}</option>
+        </select>
+        <textarea name="details" class="champ" rows="2" maxlength="500" placeholder="{{ t('Détails (optionnel)') }}"></textarea>
+        <button class="btn btn-rouge btn-plein">{{ t("Envoyer le signalement") }}</button>
+      </form>
+    </details>
+  </details>
+</div>
+<div id="match-overlay" class="match-overlay" hidden>
+  <div class="match-box">
+    <h2>{{ t("C'est un match !") }}</h2>
+    <button id="match-close" class="btn btn-vert">{{ t("Continuer") }}</button>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/membre.js') }}"
+        data-swipe-url="{{ url_for('user_app.api_swipe', slug=session.slug) }}"
+        data-t-liked="{{ t('Aimé ♥') }}"
+        data-t-retry="{{ t('Réessayer') }}"></script>
+{% endblock %}

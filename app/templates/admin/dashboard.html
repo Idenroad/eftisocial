@@ -1,0 +1,16 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Intervenant — {{ session.name }}{% endblock %}
+{% block content %}
+<h1>Bonjour {{ actor.first_name }}</h1>
+<p class="petit">Intervenant · {{ session.name }}</p>
+<div class="stats">
+  <div class="stat"><span class="stat-n">{{ stats.users }}</span>membres</div>
+  <div class="stat"><span class="stat-n">{{ stats.paused }}</span>en pause</div>
+  <div class="stat"><span class="stat-n">{{ stats.matches }}</span>matchs</div>
+  <div class="stat"><span class="stat-n">{{ stats.events }}</span>événements</div>
+</div>
+<form method="post" action="{{ url_for('session_admin.logout', slug=session.slug) }}">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <button class="btn btn-lien btn-plein">Me déconnecter</button>
+</form>
+{% endblock %}

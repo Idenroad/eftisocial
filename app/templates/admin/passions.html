@@ -1,0 +1,54 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Passions — {{ session.name }}{% endblock %}
+{% block content %}
+<h1>Passions</h1>
+{% if error %}<p class="alert-rouge">{{ error }}</p>{% endif %}
+
+<h2>Catalogue suggéré</h2>
+<p class="petit">Ces passions sont proposées aux membres quand ils remplissent leur profil.</p>
+<form method="post" class="ligne-form">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <input type="hidden" name="action" value="catalog_add">
+  <input type="text" name="name" class="champ" placeholder="Ex. : pétanque" maxlength="60" required>
+  <button class="btn btn-vert">Ajouter</button>
+</form>
+<ul class="liste-passions">
+  {% for p in catalog %}
+  <li>
+    <a><span class="passion-nom">{{ p }}</span>
+    <form method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <input type="hidden" name="action" value="catalog_del">
+      <input type="hidden" name="name" value="{{ p }}">
+      <button class="mini rouge" title="Retirer">✕</button>
+    </form></a>
+  </li>
+  {% else %}
+  <li class="vide">Catalogue vide.</li>
+  {% endfor %}
+</ul>
+
+<h2>Passions interdites</h2>
+<p class="petit">Ces mots sont refusés comme passion et retirés de tous les profils.</p>
+<form method="post" class="ligne-form">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <input type="hidden" name="action" value="ban_add">
+  <input type="text" name="name" class="champ" placeholder="Mot à interdire" maxlength="60" required>
+  <button class="btn btn-rouge">Interdire</button>
+</form>
+<ul class="liste-passions">
+  {% for b in banned %}
+  <li>
+    <a><span class="passion-nom">{{ b }}</span>
+    <form method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <input type="hidden" name="action" value="ban_del">
+      <input type="hidden" name="name" value="{{ b }}">
+      <button class="mini" title="Réautoriser">✓</button>
+    </form></a>
+  </li>
+  {% else %}
+  <li class="vide">Aucune interdiction.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

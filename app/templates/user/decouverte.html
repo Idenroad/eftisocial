@@ -1,0 +1,27 @@
+{% extends "user/base_app.html" %}
+{% block title %}{{ t("Découverte") }} — {{ session.name }}{% endblock %}
+{% block content %}
+<div class="page-head"><h1>{{ t("Découverte") }}</h1></div>
+<p>{{ t("Explorez les passions des membres de votre résidence.") }}</p>
+<input type="search" id="recherche" class="champ" placeholder="{{ t('Chercher une passion…') }}">
+<div class="filtres">
+  <button class="chip on" data-filtre="toutes">{{ t("Toutes") }}</button>
+  <button class="chip" data-filtre="miennes">{{ t("Mes passions") }}</button>
+</div>
+<ul id="liste-passions" class="liste-passions">
+  {% for i in interests %}
+  <li data-mine="{{ '1' if i.mine }}" data-nom="{{ i.interest }}">
+    <a href="{{ url_for('user_app.decouverte_interest', slug=session.slug, interest=i.interest) }}">
+      <span class="passion-nom">{{ i.interest }}</span>
+      <span class="badge">{{ i.members }}</span>
+      {% if i.mine %}<span class="etoile">★</span>{% endif %}
+    </a>
+  </li>
+  {% else %}
+  <li class="vide">{{ t("Aucune passion enregistrée pour l'instant.") }}</li>
+  {% endfor %}
+</ul>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/decouverte.js') }}"></script>
+{% endblock %}

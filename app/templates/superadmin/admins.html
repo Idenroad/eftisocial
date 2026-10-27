@@ -1,0 +1,37 @@
+{% extends "superadmin/base_sa.html" %}
+{% block title %}Intervenants — {{ session_row.name }}{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Intervenants</h1>
+  <a class="lien-matchs" href="{{ url_for('superadmin.sessions') }}">← Sessions</a>
+</div>
+<p class="petit">{{ session_row.name }} (/{{ session_row.slug }})</p>
+{% if error %}<p class="alert-rouge">{{ error }}</p>{% endif %}
+{% if msg %}<p class="alert-vert">{{ msg }}</p>{% endif %}
+
+<details class="nouveau-event" {{ 'open' if error }}>
+  <summary class="btn btn-vert btn-plein">Ajouter un intervenant</summary>
+  <form method="post" class="form-event">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="text" name="first_name" class="champ" placeholder="Prénom" maxlength="60" required>
+    <input type="email" name="email" class="champ" placeholder="courriel@exemple.ca" required>
+    <button type="submit" class="btn btn-vert btn-plein">Créer</button>
+  </form>
+</details>
+
+<ul class="liste-membres">
+  {% for a in admins %}
+  <li>
+    <span>{{ a.first_name }}</span>
+    <span class="petit">{{ a.email }}</span>
+    <form method="post"
+          action="{{ url_for('superadmin.admin_delete', slug=session_row.slug, aid=a.id) }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button class="btn btn-rouge">Supprimer</button>
+    </form>
+  </li>
+  {% else %}
+  <li class="vide">Aucun intervenant.</li>
+  {% endfor %}
+</ul>
+{% endblock %}
