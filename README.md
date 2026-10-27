@@ -18,7 +18,7 @@ Interface trilingue : **français, anglais, espagnol**.
 ## ⚠️ Statut
 
 Ceci est un **MVP** (minimum viable product) fonctionnel mais pas un produit
-fin : il est fait pour être testé, démontré et fait évoluer. Voir la section
+fini : il est fait pour être testé, démontré et par la suite évoler. Voir la section
 « Limites connues » avant tout usage réel.
 
 ---
@@ -244,3 +244,28 @@ redistribution, mais **tout dérivé doit rester open source** — y compris
 toute exploitation en SaaS/réseau (clause spécifique de l'AGPL). Impossible
 de reprendre ce code pour en faire un produit commercial fermé.
 Attribution d'origine à conserver.
+
+## Screenshots
+
+<img width="432" height="847" alt="image-1" src="https://github.com/user-attachments/assets/3e6da255-f37c-4094-b992-363da35e09bd" />  <img width="432" height="848" alt="image-2" src="https://github.com/user-attachments/assets/d9fec307-7cac-451c-afe4-f3a4d5c8a708" />
+
+<img width="433" height="851" alt="image-3" src="https://github.com/user-attachments/assets/9b41cb4c-ce8c-42fa-b597-96a901ab77d9" />  <img width="429" height="848" alt="image-4" src="https://github.com/user-attachments/assets/7b786b68-d595-4ace-b5b5-dd152a21fdf9" />
+
+<img width="431" height="848" alt="image-5" src="https://github.com/user-attachments/assets/51c30393-ebd5-47bd-baef-83d7b26f8b76" />  <img width="431" height="844" alt="image-6" src="https://github.com/user-attachments/assets/89899bc5-464f-49eb-b2a6-3970d7ac8e61" />
+
+<img width="423" height="844" alt="image-7" src="https://github.com/user-attachments/assets/6581b353-f3ea-4168-8acb-8e09ebea9974" />  <img width="423" height="844" alt="image-8" src="https://github.com/user-attachments/assets/ea50e98d-a980-4ef2-9d0f-c73704f4bb69" />
+
+<img width="429" height="847" alt="image-9" src="https://github.com/user-attachments/assets/4c5f8b63-e6c7-48ae-9531-ce6e90fc6ef3" />  <img width="429" height="846" alt="image-10" src="https://github.com/user-attachments/assets/a305c902-3aaa-464e-9fcb-0224a7531765" />
+
+<img width="431" height="849" alt="image-11" src="https://github.com/user-attachments/assets/01d2f736-836e-40da-b6bf-653c2ef30565" />
+
+
+
+
+
+
+
+
+
+
+
